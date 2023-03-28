@@ -5,6 +5,7 @@ using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
 using System.Text;
 
+
 namespace rsa
 {
     internal class Program
@@ -12,6 +13,18 @@ namespace rsa
         private static readonly int bitLength = 4096;
         private static readonly int primerCertainty = 100;
         private static readonly SecureRandom secureRandom = new SecureRandom();
+
+        public static BigInteger CubeRoot(BigInteger x)
+        {
+            BigInteger y = new BigInteger("1");
+            BigInteger z = BigInteger.Zero;
+            while (!y.Equals(z))
+            {
+                z = y;
+                y = y.Multiply(new BigInteger("2")).Add(x.Divide(y.Pow(2))).Divide(new BigInteger("3"));
+            }
+            return y;
+        }
         public static BigInteger Encrypt(string message, BigInteger e, BigInteger N)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
@@ -30,6 +43,11 @@ namespace rsa
         }
         static void Main(string[] args)
         {
+            BigInteger messageInt = new BigInteger("2829246759667430901779973875");
+            BigInteger root = CubeRoot(messageInt);
+            Console.WriteLine(Encoding.UTF8.GetString(root.ToByteArray()));
+            return;
+
             BigInteger p = new BigInteger(bitLength, primerCertainty, secureRandom);
             BigInteger q = new BigInteger(bitLength, primerCertainty, secureRandom);
             //BigInteger p = BigInteger.ValueOf(7);
@@ -53,7 +71,7 @@ namespace rsa
             BigInteger encrypted = Encrypt(msg, e, N);
             Console.WriteLine(encrypted);
             Console.WriteLine(Decrypt(encrypted, d, N));
-
+            
         }
     }
 }
