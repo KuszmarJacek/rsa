@@ -3,14 +3,16 @@ using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
+using System.Security.Cryptography;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace rsa
 {
     internal class Program
     {
-        private static readonly int bitLength = 4096;
+        private static readonly int bitLength = 1024;
         private static readonly int primerCertainty = 100;
         private static readonly SecureRandom secureRandom = new SecureRandom();
 
@@ -43,15 +45,9 @@ namespace rsa
         }
         static void Main(string[] args)
         {
-            BigInteger messageInt = new BigInteger("2829246759667430901779973875");
-            BigInteger root = CubeRoot(messageInt);
-            Console.WriteLine(Encoding.UTF8.GetString(root.ToByteArray()));
-            return;
-
             BigInteger p = new BigInteger(bitLength, primerCertainty, secureRandom);
             BigInteger q = new BigInteger(bitLength, primerCertainty, secureRandom);
-            //BigInteger p = BigInteger.ValueOf(7);
-            //BigInteger q = BigInteger.ValueOf(3);
+            
             BigInteger N = p.Multiply(q);
             BigInteger phi = p.Subtract(BigInteger.ValueOf(1)).Multiply(q.Subtract(BigInteger.ValueOf(1)));
             BigInteger e = BigInteger.ValueOf(65537);
@@ -61,17 +57,67 @@ namespace rsa
 
             //Console.WriteLine(p);
             //Console.WriteLine(q);
-            Console.WriteLine(N);
-            Console.WriteLine();
+            //Console.WriteLine(N);
+            //Console.WriteLine();
             //Console.WriteLine(phi);
             //Console.WriteLine(e);
             //Console.WriteLine(d);
 
+            //string msg = "asdfasdasfasfasfasfqweqwffg";
+            //BigInteger encrypted = Encrypt(msg, e, N);
+            //Console.WriteLine(encrypted);
+            //Console.WriteLine(Decrypt(encrypted, d, N));
+
+            // Podpis 4.1
+
+            //Sha256Digest sha512digest = new Sha256Digest();
+            //string msgForSigning = "message :D";
+            //byte[] msgBytes = Encoding.UTF8.GetBytes(msgForSigning);
+
+            //sha512digest.BlockUpdate(msgBytes, 0, msgBytes.Length);
+            //byte[] hash = new byte[sha512digest.GetDigestSize()];
+            //Console.WriteLine(sha512digest.GetDigestSize());
+            //sha512digest.DoFinal(hash, 0);
+            //BigInteger hashInt = new BigInteger(hash);
+            //BigInteger signature = hashInt.ModPow(d, N);
+            //Console.WriteLine(signature.ToString(16));
+            //BigInteger hashFromSignature = signature.ModPow(e, N);
+            //Console.WriteLine();
+            //Console.WriteLine(hashInt.ToString(16));
+            //Console.WriteLine();
+            //Console.WriteLine(hashFromSignature.ToString(16));
+
+
+            // Eksperyment 1
             string msg = "asdfasdasfasfasfasfqweqwffg";
-            BigInteger encrypted = Encrypt(msg, e, N);
-            Console.WriteLine(encrypted);
-            Console.WriteLine(Decrypt(encrypted, d, N));
-            
+            byte[] msgBytes = Encoding.UTF8.GetBytes(msg);
+            BigInteger msgInt = new BigInteger(msgBytes);
+            BigInteger somePrime = new BigInteger(bitLength, primerCertainty, secureRandom);
+            BigInteger s = msgInt.ModPow(somePrime, N);
+            BigInteger m = s.ModPow(e, N);
+            Console.WriteLine(s.ToString(16));
+            Console.WriteLine(m.ToString());
+
+            // Eksperyment 2
+            //BigInteger m1 = new BigInteger(bitLength, primerCertainty, secureRandom);
+            //BigInteger m2 = new BigInteger(bitLength, primerCertainty, secureRandom);
+            //BigInteger m = m1.Multiply(m2).Mod(N);
+            //BigInteger somePrime = new BigInteger(bitLength, primerCertainty, secureRandom);
+            //BigInteger s1 = m1.ModPow(somePrime, N);
+            //BigInteger s2 = m2.ModPow(somePrime, N);
+            //BigInteger s1s2_signature = s1.Multiply(s2).Mod(N);
+            //BigInteger m_signature = m.ModPow(somePrime, N);
+            //Console.WriteLine(s1s2_signature);
+            //Console.WriteLine();
+            //Console.WriteLine(m_signature);
+            // Oba podpisy sa takie same, dlatego nie podpisuje sie samej wiadomosci
+
+
+            // Eksperyment 3
+            //BigInteger messageInt = new BigInteger("2829246759667430901779973875");
+            //BigInteger root = CubeRoot(messageInt);
+            //Console.WriteLine(Encoding.UTF8.GetString(root.ToByteArray()));
+            //return;
         }
     }
 }
