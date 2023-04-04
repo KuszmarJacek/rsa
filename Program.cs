@@ -149,6 +149,7 @@ namespace rsa
 // Eksperyment 1: No message attack: no i co z tego ze dostaniemy podpis skoro skrot sie nie zgadza.
 // Eksperyment 2: Skrot wiadomosci m, m1, m2 sie roznia, wiec znowu co z tego ze ma podpis?
 // Eksperyment 3: ???
+// https://www.cs.purdue.edu/homes/jblocki/courses/555_Spring17/slides/Lecture33.pdf
 
 // Jak ustala się wartość klucza publicznego?
 // Wybiera sie duze e z liczb Fermata, po wygenerowaniu p i q, mnozy sie je, w efekcie postaje N, wartosc klucza publlicznego to (N, e)
@@ -162,8 +163,8 @@ namespace rsa
 //   tych danych wykonana po złożeniu podpisu będzie rozpoznawalna.
 
 // Wyjaśnij dlaczego ataki z pkt. 2 są możliwie do przeprowadzenia.
-// Eksperyment 1: ?
-// Eksperyment 2: ?
+// Eksperyment 1: Jest to mozliwe, bo jesli mamy wiadomosc m i klucz prywatny, to zawsze wyjdzie nam ten sam wynik. Jesli chcemy sie tego pozbyc, to uzyc paddingu i RSA PSS. ???
+// Eksperyment 2: Bo operacje podpisu jest mnozeniem modularnym. Zeby sie go pozbyc stosuje sie padding jak w RSA PSS. ???
 // Eksperyment 3: e jest za male, wiec mozna wziac pierwiastek trzeciego stopnia z wiadomosci i otrzymac jawna wiadomosc
 
 // Jaka wartość klucza publicznego należy wybrać, czy e może być stałe?
